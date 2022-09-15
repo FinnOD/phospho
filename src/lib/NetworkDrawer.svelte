@@ -1,12 +1,33 @@
-<script>
+<script lang="ts">
+	import { onMount, onDestroy } from "svelte";
 	import Drawer from "svelte-drawer-component";
 	import Select from "svelte-select";
-    import { showMenu } from "./../stores";
-    import UploadButton from "./UploadButton.svelte"
+	import { showMenu, baseNetwork } from "./../stores";
+	import UploadButton from "./UploadButton.svelte";
 
-    const items = [
-		{value: './assets/kinases.json', label: 'All Kinases'}
+    
+	const items = [
+		{ value: "../assets/networkTiny.json", label: "Tiny Network", data: undefined },
+		{ value: "../assets/kinases.json", label: "All Kinases", data: undefined },
+		{ value: "../assets/network.json", label: "Full Network", data: undefined },
 	];
+    let selectedNetwork = items[0];
+
+    let mounted = false;
+    onMount(async () => {
+		items[0].data = (await import('../assets/networkTiny.json')).default;
+        items[1].data = (await import('../assets/kinases.json')).default;
+        items[2].data = (await import('../assets/network.json')).default;
+        mounted = true;
+	});
+
+    $: if(mounted && selectedNetwork){
+        baseNetwork.set(selectedNetwork.data);
+    }
+
+    onDestroy(() => {
+        mounted = false;
+    });
 </script>
 
 <Drawer open={$showMenu} size="30%" on:clickAway={() => ($showMenu = false)}>
@@ -16,10 +37,11 @@
 	</div>
 	<div class="drawerbody">
 		Network Select
-		<Select {items}></Select>
-        <br>
-        Fold-Change Data
-        <UploadButton></UploadButton>
+		<Select {items} bind:value={selectedNetwork}  /> 
+        <!-- on:select={handleNetworkSelect} -->
+		<br />
+		Fold-Change Data
+		<UploadButton />
 	</div>
 </Drawer>
 

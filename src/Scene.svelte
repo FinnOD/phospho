@@ -10,14 +10,14 @@
 
 	import EdgeInstance from "./lib/EdgeInstance.svelte";
     import NodeInstance from "./lib/NodeInstance.svelte";
-	import { dataGraphToGraphology, calculateGraphAttributes } from "./lib/graphLoading";
-	import networkData from "./assets/networkTiny.json";
+
+    import { G } from "./stores";
 
 	const scale = 100;
+    $: console.log($G)
 
 	//full graph has 3292 nodes, 17080 edges
-	let G = dataGraphToGraphology(networkData);
-	G = calculateGraphAttributes(G, scale);
+    
 
 	const nodeRadius = 2;
 	const geometry = new IcosahedronGeometry(nodeRadius, 5);
@@ -51,16 +51,18 @@
 <DirectionalLight color={0xffffff} intensity={0.6} position={{ x: 500, y: 500, z: 500 }} />
 <AmbientLight color={0x999999} />
 
-<InstancedMesh geometry={lineGeometry} material={lineMaterial} interactive>
-	{#each G.edges() as e (e + "_interactive")}
-		{#if G.getEdgeAttribute(e, "isFirstLink")}
-			<EdgeInstance graph={G} edgeID={e} {width} />
-		{/if}
-	{/each}
-</InstancedMesh>
+{#if $G}
+    <InstancedMesh geometry={lineGeometry} material={lineMaterial} interactive>
+        {#each $G.edges() as e (e + "_interactive")}
+            {#if $G.getEdgeAttribute(e, "isFirstLink")}
+                <EdgeInstance graph={$G} edgeID={e} {width} />
+            {/if}
+        {/each}
+    </InstancedMesh>
 
-<InstancedMesh {geometry} {material} interactive>
-	{#each Object.entries(G.nodes()) as [i, n] (n)}
-		<NodeInstance graph={G} nodeID={n} />
-	{/each}
-</InstancedMesh>
+    <InstancedMesh {geometry} {material} interactive>
+        {#each Object.entries($G.nodes()) as [i, n] (n)}
+            <NodeInstance graph={$G} nodeID={n} />
+        {/each}
+    </InstancedMesh>
+{/if}
