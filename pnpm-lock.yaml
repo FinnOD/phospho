@@ -9,6 +9,7 @@ specifiers:
   graphology-types: ^0.24.4
   svelte: ^3.49.0
   svelte-check: ^2.8.1
+  svelte-drawer-component: ^1.2.2
   svelte-preprocess: ^4.10.7
   three: ^0.144.0
   tslib: ^2.4.0
@@ -27,6 +28,7 @@ devDependencies:
   graphology-types: 0.24.4
   svelte: 3.50.1
   svelte-check: 2.9.0_svelte@3.50.1
+  svelte-drawer-component: 1.2.2
   svelte-preprocess: 4.10.7_iprco5tylfmvffqgrvqxc46njy
   tslib: 2.4.0
   typescript: 4.8.3
@@ -818,6 +820,10 @@ packages:
       - sass
       - stylus
       - sugarss
+    dev: true
+
+  /svelte-drawer-component/1.2.2:
+    resolution: {integrity: sha512-FyVaqwydJZfO266ERLbSsn9WojXwC5Mhc2pTOoZPTHcYopCdnINw+vKPuDnb/2osLEbDNnCE/2+MSgJsR9r56Q==}
     dev: true
 
   /svelte-hmr/0.14.12_svelte@3.50.1:
