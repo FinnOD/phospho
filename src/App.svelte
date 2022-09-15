@@ -4,18 +4,11 @@
 	import NetworkDrawer from "./lib/NetworkDrawer.svelte";
 	import MenuButton from "./lib/MenuButton.svelte";
 
-	let open = false;
 </script>
 
 <div id="main">
-	<MenuButton
-		active={open}
-		on:click={() => {
-			console.log("dddd");
-			open = !open;
-		}}
-	/>
-	<NetworkDrawer {open} />
+	<MenuButton />
+	<NetworkDrawer />
 	<Canvas>
 		<Scene />
 	</Canvas>

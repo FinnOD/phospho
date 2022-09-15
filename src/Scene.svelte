@@ -11,7 +11,7 @@
 	import EdgeInstance from "./lib/EdgeInstance.svelte";
     import NodeInstance from "./lib/NodeInstance.svelte";
 	import { dataGraphToGraphology, calculateGraphAttributes } from "./lib/graphLoading";
-	import networkData from "./assets/kinases.json";
+	import networkData from "./assets/networkTiny.json";
 
 	const scale = 100;
 

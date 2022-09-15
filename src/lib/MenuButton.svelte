@@ -1,12 +1,11 @@
 <script lang="ts">
-	export let active: boolean;
-	$: console.log(active);
+	import { showMenu } from "./../stores";
 </script>
 
-<div id="menu-icon" class:active on:click style={"--transition-time: 0.2s;"}>
-	<span class:active class="line line-1" />
-	<span class:active class="line line-2" />
-	<span class:active class="line line-3" />
+<div id="menu-icon" class="{$showMenu ? 'active' : ''}" on:click={() => ($showMenu = !$showMenu)} style={"--transition-time: 0.2s;"}>
+	<span class="{$showMenu ? 'active line line-1' : 'line line-1'}" />
+	<span class="{$showMenu ? 'active line line-2' : 'line line-2'}" />
+	<span class="{$showMenu ? 'active line line-3' : 'line line-3'}" />
 </div>
 
 <style>
@@ -55,7 +54,7 @@
 		/* -webkit-transform: translateY(8px / 2 * -1);
 		-moz-transform: translateY(8px / 2 * -1); */
 	}
-    
+
     .active .line-1 {
 		transform: translateY(calc(0.5 * var(--icon-height))) translateX(0px) rotate(45deg);
 		-webkit-transform: translateY(calc(0.5 * var(--icon-height))) translateX(0px) rotate(45deg);
