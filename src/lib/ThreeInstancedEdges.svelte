@@ -10,6 +10,7 @@
 
 	export let graph: MultiDiGraph;
 	export let width: number;
+	export let showSubstrates: boolean;
 	export let geometry;
 	export let material;
 
@@ -20,7 +21,7 @@
 		let i = 0;
 		graph.forEachEdge((edge, attr, source, target, sAttr, tAttr) => {
 			if (!attr.isFirstLink || source === target) return;
-			
+			if (!showSubstrates && !(sAttr.isKinase && tAttr.isKinase)) return;
 
 			const sPos = new Vector3(sAttr.x, sAttr.y, sAttr.z);
 			const tPos = new Vector3(tAttr.x, tAttr.y, tAttr.z);

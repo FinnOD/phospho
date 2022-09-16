@@ -15,14 +15,14 @@
 	import EdgeInstance from "./lib/EdgeInstance.svelte";
 	import NodeInstance from "./lib/NodeInstance.svelte";
 
-	import { G, rotate } from "./stores";
+	import { G, rotate, showSubstrates } from "./stores";
 	import ThreeInstancedEdges from "./lib/ThreeInstancedEdges.svelte";
 
 	const scale = 100;
 	//full graph has 3292 nodes, 17080 edges
 
 	const nodeRadius = 2;
-	const geometry = new IcosahedronGeometry(nodeRadius, 0);
+	const geometry = new IcosahedronGeometry(nodeRadius, 2);
 	const material = new MeshLambertMaterial({
 		opacity: 0.8,
 		transparent: false,
@@ -32,8 +32,8 @@
 	const nSeg = 3;
 	const lineGeometry = new CylinderGeometry(1, 1, 1, nSeg, 1, false);
 	const lineMaterial = new MeshLambertMaterial({
-		opacity: 0.05,
-		transparent: true,
+		// opacity: 0.05,
+		// transparent: true,
 		color: "#9DAABC",
 	});
 
@@ -55,11 +55,13 @@
 <AmbientLight color={0x999999} />
 
 {#if $G}
-	<ThreeInstancedEdges geometry={lineGeometry} material={lineMaterial} {width} graph={$G} />
+	<ThreeInstancedEdges geometry={lineGeometry} material={lineMaterial} {width} graph={$G} showSubstrates={$showSubstrates}/>
 
 	<InstancedMesh {geometry} {material} interactive>
 		{#each Object.entries($G.nodes()) as [i, n] (n)}
-			<NodeInstance graph={$G} nodeID={n} />
+            {#if ($showSubstrates || $G.getNodeAttribute(n, 'isKinase'))}
+                <NodeInstance graph={$G} nodeID={n} />
+            {/if}
 		{/each}
 	</InstancedMesh>
 {/if}

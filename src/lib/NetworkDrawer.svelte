@@ -2,7 +2,7 @@
 	import { onMount, onDestroy } from "svelte";
 	import Drawer from "svelte-drawer-component";
 	import Select from "svelte-select";
-	import { showMenu, rotate, baseNetwork } from "./../stores";
+	import { showMenu, rotate, showSubstrates, baseNetwork } from "./../stores";
 	import UploadButton from "./UploadButton.svelte";
 	import Switch from "./Switch.svelte";
 
@@ -51,6 +51,13 @@
 				<Switch bind:checked={$rotate} />
 			</div>
 		</div>
+       
+        <div class="switchElement">
+			Show substrates
+			<div class="switch">
+				<Switch bind:checked={$showSubstrates} />
+			</div>
+		</div>
 
 	</div>
 </Drawer>
@@ -97,7 +104,9 @@
 		line-height: 1.5715;
 		/* overflow:auto; */
 	}
-
+    .switchElement{
+        margin-bottom: 12px;
+    }
     .switch{
         float: right
     }

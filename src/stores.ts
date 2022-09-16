@@ -3,6 +3,7 @@ import { calculateGraphAttributes, dataGraphToGraphology } from './lib/graphLoad
 
 export let showMenu = writable(false);
 export let rotate = writable(false);
+export let showSubstrates = writable(false);
 export let fcData = writable(undefined); // [{}, {}, ...]
 export let baseNetwork = writable(undefined);
 
