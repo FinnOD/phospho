@@ -2,32 +2,32 @@
 	import { onMount, onDestroy } from "svelte";
 	import Drawer from "svelte-drawer-component";
 	import Select from "svelte-select";
-	import { showMenu, baseNetwork } from "./../stores";
+	import { showMenu, rotate, baseNetwork } from "./../stores";
 	import UploadButton from "./UploadButton.svelte";
+	import Switch from "./Switch.svelte";
 
-    
 	const items = [
 		{ value: "../assets/networkTiny.json", label: "Tiny Network", data: undefined },
 		{ value: "../assets/kinases.json", label: "All Kinases", data: undefined },
 		{ value: "../assets/network.json", label: "Full Network", data: undefined },
 	];
-    let selectedNetwork = items[0];
+	let selectedNetwork = items[0];
 
-    let mounted = false;
-    onMount(async () => {
-		items[0].data = (await import('../assets/networkTiny.json')).default;
-        items[1].data = (await import('../assets/kinases.json')).default;
-        items[2].data = (await import('../assets/network.json')).default;
-        mounted = true;
+	let mounted = false;
+	$: if (mounted && selectedNetwork) {
+		baseNetwork.set(selectedNetwork.data);
+		console.log($baseNetwork);
+	}
+	onMount(async () => {
+		items[0].data = (await import("../assets/networkTiny.json")).default;
+		items[1].data = (await import("../assets/kinases.json")).default;
+		items[2].data = (await import("../assets/network.json")).default;
+		mounted = true;
 	});
 
-    $: if(mounted && selectedNetwork){
-        baseNetwork.set(selectedNetwork.data);
-    }
-
-    onDestroy(() => {
-        mounted = false;
-    });
+	onDestroy(() => {
+		mounted = false;
+	});
 </script>
 
 <Drawer open={$showMenu} size="30%" on:clickAway={() => ($showMenu = false)}>
@@ -37,11 +37,21 @@
 	</div>
 	<div class="drawerbody">
 		Network Select
-		<Select {items} bind:value={selectedNetwork}  /> 
-        <!-- on:select={handleNetworkSelect} -->
+		<Select {items} bind:value={selectedNetwork} />
 		<br />
 		Fold-Change Data
 		<UploadButton />
+		<br />
+		<hr />
+		<br />
+
+		<div class="switchElement">
+			Auto-rotate
+			<div class="switch">
+				<Switch bind:checked={$rotate} />
+			</div>
+		</div>
+
 	</div>
 </Drawer>
 
@@ -87,4 +97,8 @@
 		line-height: 1.5715;
 		/* overflow:auto; */
 	}
+
+    .switch{
+        float: right
+    }
 </style>
