@@ -10,7 +10,10 @@
 		isFocused = false;
 	}
 
+	export let value = false;
 	let files;
+	
+	$: value = (!!files);
 
 	$: if (files) {
 		let reader = new FileReader();
@@ -23,7 +26,7 @@
                 console.error(error);
                 files = undefined;
             }
-
+			console.log(event)
             fcData.set(dataObj)
         };
 

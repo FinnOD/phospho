@@ -12,8 +12,7 @@
 		AmbientLight,
 	} from "@threlte/core";
 
-	import EdgeInstance from "./lib/EdgeInstance.svelte";
-	import NodeInstance from "./lib/NodeInstance.svelte";
+    import Nodes from "./lib/Nodes.svelte";
 
 	import { G, rotate, showSubstrates } from "./stores";
 	import ThreeInstancedEdges from "./lib/ThreeInstancedEdges.svelte";
@@ -22,19 +21,25 @@
 	//full graph has 3292 nodes, 17080 edges
 
 	const nodeRadius = 2;
-	const geometry = new IcosahedronGeometry(nodeRadius, 2);
-	const material = new MeshLambertMaterial({
+	const nodeGeometry = new IcosahedronGeometry(nodeRadius, 2);
+	const nodeMaterial = new MeshLambertMaterial({
 		opacity: 0.8,
 		transparent: false,
 	});
 
 	const width = 0.5;
-	const nSeg = 3;
+	const nSeg = 5;
 	const lineGeometry = new CylinderGeometry(1, 1, 1, nSeg, 1, false);
 	const lineMaterial = new MeshLambertMaterial({
-		// opacity: 0.05,
-		// transparent: true,
+		opacity: 0.6,
+		transparent: true,
 		color: "#9DAABC",
+	});
+    const transparentMaterial = new MeshLambertMaterial({
+		opacity: 0.1,
+		transparent: true,
+		color: "#9DAABC",
+        // color: "#00ff00",
 	});
 
 </script>
@@ -54,14 +59,7 @@
 <DirectionalLight color={0xffffff} intensity={0.6} position={{ x: 500, y: 500, z: 500 }} />
 <AmbientLight color={0x999999} />
 
-{#if $G}
+{#if ($G)}
 	<ThreeInstancedEdges geometry={lineGeometry} material={lineMaterial} {width} graph={$G} showSubstrates={$showSubstrates}/>
-
-	<InstancedMesh {geometry} {material} interactive>
-		{#each Object.entries($G.nodes()) as [i, n] (n)}
-            {#if ($showSubstrates || $G.getNodeAttribute(n, 'isKinase'))}
-                <NodeInstance graph={$G} nodeID={n} />
-            {/if}
-		{/each}
-	</InstancedMesh>
+    <Nodes {nodeGeometry} {nodeMaterial} {transparentMaterial} />
 {/if}

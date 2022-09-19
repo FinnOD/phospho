@@ -2,9 +2,11 @@
 	import { onMount, onDestroy } from "svelte";
 	import Drawer from "svelte-drawer-component";
 	import Select from "svelte-select";
-	import { showMenu, rotate, showSubstrates, baseNetwork } from "./../stores";
+	import { showMenu, rotate, showSubstrates, baseNetwork, minimumFC } from "./../stores";
 	import UploadButton from "./UploadButton.svelte";
 	import Switch from "./Switch.svelte";
+
+	let hasUpload;
 
 	const items = [
 		{ value: "../assets/networkTiny.json", label: "Tiny Network", data: undefined },
@@ -16,7 +18,6 @@
 	let mounted = false;
 	$: if (mounted && selectedNetwork) {
 		baseNetwork.set(selectedNetwork.data);
-		console.log($baseNetwork);
 	}
 	onMount(async () => {
 		items[0].data = (await import("../assets/networkTiny.json")).default;
@@ -40,7 +41,7 @@
 		<Select {items} bind:value={selectedNetwork} />
 		<br />
 		Fold-Change Data
-		<UploadButton />
+		<UploadButton bind:value={hasUpload}/>
 		<br />
 		<hr />
 		<br />
@@ -58,6 +59,8 @@
 				<Switch bind:checked={$showSubstrates} />
 			</div>
 		</div>
+		<br>
+		<input disabled={!hasUpload} style="width: 100%;" type=range step=0.1 bind:value={$minimumFC} min={-0.1} max=4>
 
 	</div>
 </Drawer>
@@ -108,6 +111,7 @@
         margin-bottom: 12px;
     }
     .switch{
+		
         float: right
     }
 </style>

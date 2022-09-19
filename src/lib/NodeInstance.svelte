@@ -8,15 +8,16 @@
 
 	export let graph: MultiDiGraph;
 	export let nodeID: string;
+	export let greyedOut: boolean;
 
 	let nAttrs = graph.getNodeAttributes(nodeID);
-	const position: Position = { x: nAttrs.x, y: nAttrs.y, z: nAttrs.z };
 
+	const position: Position = { x: nAttrs.x, y: nAttrs.y, z: nAttrs.z };
 	let hovering = false;
 
 	const scale = tweened(1);
 	const colorTween = tweened(0);
-	$: if (hovering) {
+	$: if (!greyedOut && hovering) {
 		scale.set(3, {
 			duration: 50,
 			easing: sineInOut,
@@ -34,8 +35,8 @@
 		});
 	}
 
-	const baseColor = new Color(0xff3e00);
-	const endColor = new Color(0xfed000);
+	let baseColor = new Color(0xff3e00);
+	let endColor = new Color(0xfed000);
 
 	const color = derived(colorTween, (c) => {
 		return new Color().lerpColors(baseColor, endColor, c);
@@ -45,7 +46,7 @@
 <Instance
 	position={{ ...position }}
 	scale={$scale}
-	color={$color}
+	color={greyedOut ? new Color(0x505050) : $color}
 	on:pointerenter={() => (hovering = true)}
 	on:pointerleave={() => (hovering = false)}
 />

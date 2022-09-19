@@ -28,7 +28,8 @@ export function dataGraphToGraphology(graphData: GraphData): MultiDirectedGraph 
 
 	G.import({
 		attributes: {
-			name: "My Graph",
+			name: graphData["id"] ?? "name-" + Math.floor(Math.random() * 1000000000),
+			id: graphData["name"],
 		},
 		options: {
 			allowSelfLoops: true,
@@ -55,10 +56,9 @@ export function dataGraphToGraphology(graphData: GraphData): MultiDirectedGraph 
 }
 
 export function calculateGraphAttributes(G: MultiDirectedGraph, scale: number): MultiDirectedGraph {
-
 	// Node Positions
 	G.updateEachNodeAttributes((node, a) => {
-		return { ...a, x: a.x * scale, y: a.y * scale, z: a.z * scale };
+		return { ...a, x: a.x * scale, y: a.y * scale, z: a.z * scale, maxAbsFC: a?.maxAbsFC ?? 0 };
 	});
 
 	//Edge rotation and position etc
@@ -86,7 +86,7 @@ export function calculateGraphAttributes(G: MultiDirectedGraph, scale: number): 
 		beenTo.push(node);
 	});
 
-    G.updateEachEdgeAttributes((edge, attr, source, target, sourceAttr, targetAttr) => { 
+	G.updateEachEdgeAttributes((edge, attr, source, target, sourceAttr, targetAttr) => {
 		const isAntiAlphabetical = collator.compare(source, target);
 		const numMatches: number = attr.multiTotal;
 		const numBefore: number = attr.multiNumber;
@@ -152,4 +152,64 @@ export function splitGraphEdges(G: MultiDirectedGraph): {
 	});
 
 	return { single: single, multi: multi, self: self };
+}
+
+export type FCEntry = {
+	targetid: string;
+	site: string;
+	fc: number;
+	err: number;
+};
+export type FCData = { id: string; data: Array<FCEntry> };
+
+export function addFCtoG(G: MultiDirectedGraph, fc: FCData | undefined): MultiDirectedGraph {
+	let fcData = fc.data;
+	if (fcData === undefined) {
+		G.updateEachEdgeAttributes((edge, attr) => {
+			attr.fc = undefined;
+			attr.err = undefined;
+			return attr;
+		});
+		return G;
+	} else {
+		let panSpecificFirst = fcData.sort((x, y) =>
+			x.site === y.site ? 0 : x.site === "Pan-specific" ? -1 : 1
+		);
+
+		let maxFCbyNode = Object.fromEntries(G.mapNodes((nodeID) => [nodeID, 0]));
+
+		G.updateEachEdgeAttributes((edge, attr, source, target, sourceAttr, targetAttr) => {
+			let foundFC = panSpecificFirst
+				.slice()
+				.find((fcEntry: any) => fcEntry.targetid === target);
+			let betterMatch = panSpecificFirst
+				.slice()
+				.find(
+					(fcEntry: any) =>
+						fcEntry.targetid === target && fcEntry.site === attr.substratePhosphosite
+				);
+			if (betterMatch !== undefined) foundFC = betterMatch;
+
+			attr.fc = foundFC?.fc;
+			attr.err = foundFC?.err;
+
+			let absFC = Math.abs(attr?.fc ?? 0);
+
+			if (absFC > maxFCbyNode[source]) {
+				maxFCbyNode[source] = absFC;
+			}
+
+			if (absFC > maxFCbyNode[target]) {
+				maxFCbyNode[target] = absFC;
+			}
+
+			return attr;
+		});
+
+		G.updateEachNodeAttributes((node, attr) => {
+			return { ...attr, maxAbsFC: maxFCbyNode[node] };
+		});
+
+		return G;
+	}
 }
