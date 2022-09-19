@@ -13,12 +13,13 @@
 	let nAttrs = graph.getNodeAttributes(nodeID);
 
 	const position: Position = { x: nAttrs.x, y: nAttrs.y, z: nAttrs.z };
+	const radius = nAttrs.radius ?? 1;
 	let hovering = false;
 
-	const scale = tweened(1);
+	const scale = tweened(radius);
 	const colorTween = tweened(0);
 	$: if (!greyedOut && hovering) {
-		scale.set(3, {
+		scale.set(radius*3, {
 			duration: 50,
 			easing: sineInOut,
 		});
@@ -26,7 +27,7 @@
 			duration: 0,
 		});
 	} else {
-		scale.set(1, {
+		scale.set(radius, {
 			duration: 250,
 			easing: sineInOut,
 		});

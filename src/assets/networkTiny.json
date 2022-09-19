@@ -24,14 +24,6 @@
             "source": "P41240",
             "substratePhosphosite": "Y426",
             "target": "P07222947"
-        }, 
-        {
-            "effectCode": "+",
-            "fullPhosphorylationEffect": "Yes Tyr-426 phosphorylation stimulates phosphotransferase activity. This phosphosite is located in the kinase activation loop between catalytic subdomains VII and VIII.",
-            "key": "P07947-26333->P07947",
-            "source": "P41240",
-            "substratePhosphosite": "Y426",
-            "target": "P07222947"
         }
     ],
     "nodes": [

@@ -16,8 +16,6 @@
 
 	import { G, rotate, showSubstrates } from "./stores";
 	import ThreeInstancedEdges from "./lib/ThreeInstancedEdges.svelte";
-
-	const scale = 100;
 	//full graph has 3292 nodes, 17080 edges
 
 	const nodeRadius = 2;
@@ -25,6 +23,7 @@
 	const nodeMaterial = new MeshLambertMaterial({
 		opacity: 0.8,
 		transparent: false,
+        // wireframe: true
 	});
 
 	const width = 0.5;
@@ -51,7 +50,7 @@
 <PerspectiveCamera
 	fov={50}
 	far={1e10}
-	position={{ x: scale * 4, y: 2 * scale, z: scale * 4 }}
+	position={{ x: 40, y: 20, z: 40 }}
 	lookAt={{}}
 >
 	<OrbitControls autoRotate={$rotate} enableZoom={true} enableDamping={false} />

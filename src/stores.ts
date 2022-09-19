@@ -5,14 +5,15 @@ export let showMenu = writable(false);
 export let rotate = writable(false);
 export let showSubstrates = writable(true);
 export let minimumFC = writable(2);
+export let scale = writable(100);
 export let fcData = writable(undefined); // [{}, {}, ...]
 export let baseNetwork = writable(undefined);
 
-export let G = derived([baseNetwork, fcData], ($values, set) => {
+export let G = derived([baseNetwork, fcData, scale], ($values, set) => {
 	if (!$values[0]) {
 		set(undefined);
 	} else {
-		let newG = calculateGraphAttributes(dataGraphToGraphology($values[0]), 100);
+		let newG = calculateGraphAttributes(dataGraphToGraphology($values[0]), $values[2]);
 		newG.setAttribute("hasFC", false);
         newG.setAttribute("id", $values[0]['id']);
         console.log('reload');
