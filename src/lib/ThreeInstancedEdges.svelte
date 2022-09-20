@@ -19,6 +19,10 @@
 	export let geometry;
 	export let material;
 
+	const coolColor = new Color(0x2A729A);
+	const warmColor = new Color(0xFF690d);
+	const greyColor = coolColor.clone().lerp(warmColor, 0.5).offsetHSL(0, -255, 0);
+
 	let instancedEdges;
 	let transparentInstancedEdges;
 	let instancedCones;
@@ -32,7 +36,7 @@
 		const transparentMaterial = new MeshLambertMaterial({
 			opacity: 0.05,
 			transparent: true,
-			color: "#9DAABC",
+			color: greyColor,
 		});
 
 		instancedEdges = new ThreeInstancedMesh(geometry, material, 10000);
@@ -45,7 +49,6 @@
 		transparentInstancedCones = new ThreeInstancedMesh(cone, transparentMaterial, 10000);
 
 		let hasFC: boolean = graph.getAttribute("hasFC");
-		let color = new Color();
 
 		let i = 0;
 		let ti = 0;
@@ -83,18 +86,20 @@
 			
 			if (!hasFC) {
 				instancedEdges.setMatrixAt(i, m);
-				instancedEdges.setColorAt(i, color.setHex(0x9DAABC));
+				instancedEdges.setColorAt(i, greyColor);
 				instancedCones.setMatrixAt(i, Cm);
-				instancedCones.setColorAt(i, color.setHex(0x9DAABC));
+				instancedCones.setColorAt(i, greyColor);
 				i++;
 			} else {
 				let fc = attr?.fc ?? 0;
-				let newWidth = width * Math.min(Math.abs(fc), 0.5);
-				// m.compose(middle, q, new Vector3(width, spherical.radius, width));
-				// Cm.compose(arrowPos, q, new Vector3(2, arrowLength, 2));
+				let strength = Math.min(Math.max(Math.abs(fc), 0.1) / 4, 1);
+				let newWidth = 3 * width * strength;
+				newWidth = Math.abs(fc) > $minimumFC ? newWidth : 0.25;
+				m.compose(middle, q, new Vector3(newWidth, spherical.radius, newWidth));
+				Cm.compose(arrowPos, q, new Vector3(2*newWidth, arrowLength, 2*newWidth));
 
 				if (Math.abs(fc) > $minimumFC) {
-					let fcCol = fc > 0 ? color.setHex(0xFF690d) : fc < 0 ? color.setHex(0x2A729A) : color.setHex(0x9DAABC);
+					let fcCol = fc > 0 ? warmColor : fc < 0 ? coolColor : greyColor;
 					instancedEdges.setMatrixAt(i, m);
 					instancedEdges.setColorAt(i, fcCol);
 					instancedCones.setMatrixAt(i, Cm);
@@ -108,9 +113,6 @@
 
 			}
 		});
-
-
-		// instancedEdges.instanceColor.needsUpdate = true;
 	}
 </script>
 
