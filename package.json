@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@threlte/core": "^4.3.2",
+    "@threlte/extras": "^4.3.0",
     "graphology": "^0.24.1",
     "svelte-select": "5.0.0-beta.21",
     "three": "^0.144.0"

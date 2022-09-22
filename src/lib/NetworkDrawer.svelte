@@ -61,7 +61,6 @@
 		</div>
 		<br>
 		<input disabled={!hasUpload} style="width: 100%;" type=range step=0.1 bind:value={$minimumFC} min={-0.1} max=4>
-
 	</div>
 </Drawer>
 
