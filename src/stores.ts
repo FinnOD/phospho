@@ -4,6 +4,7 @@ import { calculateGraphAttributes, dataGraphToGraphology, addFCtoG } from "./lib
 export let showMenu = writable(false);
 export let rotate = writable(false);
 export let showSubstrates = writable(true);
+export let showUnselected = writable(true);
 export let minimumFC = writable(2);
 export let scale = writable(100);
 export let fcData = writable(undefined); // [{}, {}, ...]

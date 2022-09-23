@@ -11,7 +11,7 @@
 		Color
 	} from "three";
 	import type MultiDiGraph from "graphology";
-	import { minimumFC } from "./../stores";
+	import { minimumFC, showUnselected } from "./../stores";
 
 	export let graph: MultiDiGraph;
 	export let width: number;
@@ -116,7 +116,9 @@
 	}
 </script>
 
-<MeshInstance mesh={transparentInstancedCones} ignorePointer />
-<MeshInstance mesh={transparentInstancedEdges} ignorePointer />
+{#if $showUnselected}
+	<MeshInstance mesh={transparentInstancedCones} ignorePointer />
+	<MeshInstance mesh={transparentInstancedEdges} ignorePointer />
+{/if}
 <MeshInstance mesh={instancedCones} ignorePointer />
 <MeshInstance mesh={instancedEdges} ignorePointer />

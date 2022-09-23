@@ -3,7 +3,7 @@
 	import { InstancedMesh } from "@threlte/core";
 
 	import NodeInstance from "./NodeInstance.svelte";
-    import { G, showSubstrates, minimumFC } from "./../stores";
+    import { G, showSubstrates, showUnselected, minimumFC } from "./../stores";
 
 	export let nodeGeometry;
 	export let nodeMaterial;
@@ -110,8 +110,10 @@
     {/each}
 </InstancedMesh>
 
-<InstancedMesh geometry={nodeGeometry} material={transparentMaterial} ignorePointer>
-	{#each $solidTransArr[1] as n (n+'_ghost_'+String($G.getAttribute("id")))}
-		<NodeInstance graph={$G} nodeID={n} greyedOut={true} />
-	{/each}
-</InstancedMesh>
+{#if ($showUnselected)}
+    <InstancedMesh geometry={nodeGeometry} material={transparentMaterial} ignorePointer>
+        {#each $solidTransArr[1] as n (n+'_ghost_'+String($G.getAttribute("id")))}
+            <NodeInstance graph={$G} nodeID={n} greyedOut={true} />
+        {/each}
+    </InstancedMesh>
+{/if}

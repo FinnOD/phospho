@@ -2,7 +2,7 @@
 	import { onMount, onDestroy } from "svelte";
 	import Drawer from "svelte-drawer-component";
 	import Select from "svelte-select";
-	import { showMenu, rotate, showSubstrates, baseNetwork, minimumFC } from "./../stores";
+	import { showMenu, rotate, showSubstrates, showUnselected, baseNetwork, minimumFC } from "./../stores";
 	import UploadButton from "./UploadButton.svelte";
 	import Switch from "./Switch.svelte";
 
@@ -60,7 +60,15 @@
 			</div>
 		</div>
 		<br>
+		Fold-change selection
 		<input disabled={!hasUpload} style="width: 100%;" type=range step=0.1 bind:value={$minimumFC} min={-0.1} max=4>
+		<p />
+		<div class="switchElement">
+			Show unselected elements
+			<div class="switch">
+				<Switch bind:checked={$showUnselected} />
+			</div>
+		</div>
 	</div>
 </Drawer>
 
