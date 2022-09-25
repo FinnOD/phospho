@@ -28,7 +28,7 @@
 	let instancedCones;
 	let transparentInstancedCones;
 
-	const arrowLength = 5;
+	const arrowLength = 10;
 	let cone = new ConeGeometry(1, 1, 10);
 
 	$: if (graph) {
@@ -81,7 +81,7 @@
 
 
 			let Cm = new Matrix4();
-			Cm.compose(arrowPos, q, new Vector3(2, arrowLength, 2));
+			Cm.compose(arrowPos, q, new Vector3(1.5, arrowLength, 1.5));
 
 			
 			if (!hasFC) {
@@ -95,8 +95,9 @@
 				let strength = Math.min(Math.max(Math.abs(fc), 0.1) / 4, 1);
 				let newWidth = 3 * width * strength;
 				newWidth = Math.abs(fc) > $minimumFC ? newWidth : 0.25;
+				let arrowWidth = Math.max(1.5*newWidth, 0.2);
 				m.compose(middle, q, new Vector3(newWidth, spherical.radius, newWidth));
-				Cm.compose(arrowPos, q, new Vector3(2*newWidth, arrowLength, 2*newWidth));
+				Cm.compose(arrowPos, q, new Vector3(arrowWidth, arrowLength, arrowWidth));
 
 				if (Math.abs(fc) > $minimumFC) {
 					let fcCol = fc > 0 ? warmColor : fc < 0 ? coolColor : greyColor;
