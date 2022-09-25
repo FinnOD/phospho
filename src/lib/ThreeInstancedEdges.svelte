@@ -11,7 +11,7 @@
 		Color
 	} from "three";
 	import type MultiDiGraph from "graphology";
-	import { minimumFC, showUnselected } from "./../stores";
+	import { minimumFC, showUnselected, selectedNode } from "./../stores";
 
 	export let graph: MultiDiGraph;
 	export let width: number;
@@ -22,6 +22,7 @@
 	const coolColor = new Color(0x2A729A);
 	const warmColor = new Color(0xFF690d);
 	const greyColor = coolColor.clone().lerp(warmColor, 0.5).offsetHSL(0, -255, 0);
+	const selectedColor = new Color(0xFED000);
 
 	let instancedEdges;
 	let transparentInstancedEdges;
@@ -31,7 +32,7 @@
 	const arrowLength = 10;
 	let cone = new ConeGeometry(1, 1, 10);
 
-	$: if (graph) {
+	$: if (graph || $selectedNode) {
 
 		const transparentMaterial = new MeshLambertMaterial({
 			opacity: 0.05,
@@ -55,6 +56,10 @@
 		graph.forEachEdge((edge, attr, source, target, sAttr, tAttr) => {
 			if (!attr.isFirstLink || source === target) return;
 			if (!showSubstrates && !(sAttr.isKinase && tAttr.isKinase)) return;
+
+			let isSelected = false;
+			if($selectedNode == source || $selectedNode == target)
+				isSelected = true;
 
 			const sPos = new Vector3(sAttr.x, sAttr.y, sAttr.z);
 			const tPos = new Vector3(tAttr.x, tAttr.y, tAttr.z);
@@ -82,13 +87,13 @@
 
 			let Cm = new Matrix4();
 			Cm.compose(arrowPos, q, new Vector3(1.5, arrowLength, 1.5));
-
 			
 			if (!hasFC) {
+				
 				instancedEdges.setMatrixAt(i, m);
-				instancedEdges.setColorAt(i, greyColor);
+				instancedEdges.setColorAt(i, isSelected ? selectedColor : greyColor);
 				instancedCones.setMatrixAt(i, Cm);
-				instancedCones.setColorAt(i, greyColor);
+				instancedCones.setColorAt(i, isSelected ? selectedColor :greyColor);
 				i++;
 			} else {
 				let fc = attr?.fc ?? 0;

@@ -6,6 +6,9 @@ export let rotate = writable(false);
 export let showSubstrates = writable(true);
 export let showUnselected = writable(true);
 export let minimumFC = writable(2);
+
+export let selectedNode = writable(undefined);
+
 export let scale = writable(100);
 export let fcData = writable(undefined); // [{}, {}, ...]
 export let baseNetwork = writable(undefined);

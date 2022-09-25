@@ -7,46 +7,77 @@
 	import { HTML } from "@threlte/extras";
 	import type MultiDiGraph from "graphology";
 	import { Color } from "three";
+	import { selectedNode, G, minimumFC } from "./../stores";
 
 	export let graph: MultiDiGraph;
 	export let nodeID: string;
 	export let greyedOut: boolean;
 
 	const colorMap = {
-		"kinase": "#FF3E00",
-        "substrate": "#008080",
-		"selected": "#FED000",
+		kinase: "#FF3E00",
+		substrate: "#008080",
+		selected: "#FED000",
 
-		"Kinase": undefined,
+		Kinase: undefined,
 		"Ser/Thr/Tyr Kinase": undefined,
 		"Tyr Kinase": undefined,
 		"Ser/Thr Kinase": undefined,
-		"Unclassified": undefined,
-		"Transcription": undefined,
-		"Regulatory": "#FFC0CB",
-		"Structural": undefined,
-		"Metabolic": undefined,
-		"Phosphatase": undefined,
+		Unclassified: undefined,
+		Transcription: undefined,
+		Regulatory: "#FFC0CB",
+		Structural: undefined,
+		Metabolic: undefined,
+		Phosphatase: undefined,
 		"Adapter/scaffold": undefined,
-		"Cytosketetal": undefined
+		Cytosketetal: undefined,
 	};
 
-	let nAttrs = graph.getNodeAttributes(nodeID);
+	const nAttrs = graph.getNodeAttributes(nodeID);
+	const neighbours = graph.neighbors(nodeID);
+	let neighbourHover = false;
+	$: if ($selectedNode) {
+		let hasFC = $G.getAttribute("hasFC");
+		neighbourHover = neighbours.includes($selectedNode);
+		if (hasFC && neighbourHover) {
+			neighbourHover =
+				$G.reduceEdges(
+					$selectedNode,
+					nodeID,
+					(acc, edge, eAttr) => {
+						return Math.abs(eAttr.fc) > $minimumFC;
+					},
+					false
+				) ||
+				$G.reduceEdges(
+					nodeID,
+					$selectedNode,
+					(acc, edge, eAttr) => {
+						return Math.abs(eAttr.fc) > $minimumFC;
+					},
+					false
+				);
+		}
+	} else {
+		neighbourHover = false;
+	}
 
 	const position: Position = { x: nAttrs.x, y: nAttrs.y, z: nAttrs.z };
 	const radius = nAttrs.radius ?? 1;
 	let hovering = false;
+	let clicked = false;
 
 	const scale = tweened(radius);
 	const colorTween = tweened(0);
-	$: if (!greyedOut && hovering) {
+	$: if (!greyedOut && (hovering || neighbourHover || clicked)) {
 		scale.set(radius * 3, {
 			duration: 50,
 			easing: sineInOut,
 		});
-		colorTween.set(1, {
-			duration: 0,
-		});
+		if (hovering) {
+			colorTween.set(1, {
+				duration: 0,
+			});
+		}
 	} else {
 		scale.set(radius, {
 			duration: 250,
@@ -58,13 +89,11 @@
 	}
 
 	let colorString = undefined;
-	if(nAttrs.isKinase)
-		colorString = colorMap['kinase'];
-	else
-		colorString = colorMap['substrate'];
+	if (nAttrs.isKinase) colorString = colorMap["kinase"];
+	else colorString = colorMap["substrate"];
 
 	let baseColor = new Color(colorMap[nAttrs.type] ?? colorString);
-	let endColor = new Color(colorMap['selected']);
+	let endColor = new Color(colorMap["selected"]);
 
 	const color = derived(colorTween, (c) => {
 		return new Color().lerpColors(baseColor, endColor, c);
@@ -75,20 +104,47 @@
 	position={{ ...position }}
 	scale={$scale}
 	color={greyedOut ? new Color(0x505050) : $color}
-	on:pointerenter={() => (hovering = true)}
-	on:pointerleave={() => (hovering = false)}
+	on:pointerenter={() => {
+		hovering = true;
+		$selectedNode = nodeID;
+	}}
+	on:pointerleave={() => {
+		hovering = false;
+		$selectedNode = undefined;
+	}}
+	on:click={() => {
+		clicked = !clicked;
+	}}
 >
-	{#if !greyedOut && $scale > 1}
-		<HTML transform sprite scale={1.5 * $scale} pointerEvents={"none"}>
-			<h1 transition:fade>{nAttrs.name}</h1>
+	{#if !greyedOut && ($scale > 1 || neighbourHover || clicked)}
+		<HTML transform sprite scale={2 * $scale} pointerEvents={"none"}>
+			<div
+				class={"base " +
+					(neighbourHover ? "neighbour " : "") +
+					(clicked ? "clicked " : "") +
+					(hovering ? "hovering " : "")}
+			>
+				<h1 transition:fade>{nAttrs.name}</h1>
+			</div>
 		</HTML>
 	{/if}
 </Instance>
 
 <style>
-	h1 {
+	.base {
 		background-color: rgba(77, 75, 75, 0.5);
-		font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;
+		font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode",
+			Geneva, Verdana, sans-serif;
 		color: white;
+		filter: blur(5);
+	}
+	.neighbourHover {
+		z-index: 100;
+	}
+	.click {
+		z-index: 101;
+	}
+	.hovering {
+		z-index: 102;
 	}
 </style>
