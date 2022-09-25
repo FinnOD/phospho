@@ -9,6 +9,7 @@
 <div id="main">
 	<MenuButton />
 	<NetworkDrawer />
+	
 	<Canvas>
 		<Scene />
 	</Canvas>

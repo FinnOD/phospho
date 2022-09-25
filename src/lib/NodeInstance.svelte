@@ -12,6 +12,25 @@
 	export let nodeID: string;
 	export let greyedOut: boolean;
 
+	const colorMap = {
+		"kinase": "#FF3E00",
+        "substrate": "#008080",
+		"selected": "#FED000",
+
+		"Kinase": undefined,
+		"Ser/Thr/Tyr Kinase": undefined,
+		"Tyr Kinase": undefined,
+		"Ser/Thr Kinase": undefined,
+		"Unclassified": undefined,
+		"Transcription": undefined,
+		"Regulatory": "#FFC0CB",
+		"Structural": undefined,
+		"Metabolic": undefined,
+		"Phosphatase": undefined,
+		"Adapter/scaffold": undefined,
+		"Cytosketetal": undefined
+	};
+
 	let nAttrs = graph.getNodeAttributes(nodeID);
 
 	const position: Position = { x: nAttrs.x, y: nAttrs.y, z: nAttrs.z };
@@ -38,8 +57,14 @@
 		});
 	}
 
-	let baseColor = new Color(0xff3e00);
-	let endColor = new Color(0xfed000);
+	let colorString = undefined;
+	if(nAttrs.isKinase)
+		colorString = colorMap['kinase'];
+	else
+		colorString = colorMap['substrate'];
+
+	let baseColor = new Color(colorMap[nAttrs.type] ?? colorString);
+	let endColor = new Color(colorMap['selected']);
 
 	const color = derived(colorTween, (c) => {
 		return new Color().lerpColors(baseColor, endColor, c);
@@ -63,6 +88,7 @@
 <style>
 	h1 {
 		background-color: rgba(77, 75, 75, 0.5);
+		font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;
 		color: white;
 	}
 </style>
