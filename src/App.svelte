@@ -3,13 +3,14 @@
 	import Scene from "./Scene.svelte";
 	import NetworkDrawer from "./lib/NetworkDrawer.svelte";
 	import MenuButton from "./lib/MenuButton.svelte";
+	import InfoBox from "./lib/InfoBox.svelte";
 
 </script>
 
 <div id="main">
 	<MenuButton />
 	<NetworkDrawer />
-	
+	<InfoBox />
 	<Canvas>
 		<Scene />
 	</Canvas>
