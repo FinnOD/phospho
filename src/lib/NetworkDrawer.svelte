@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
-	import Drawer from "svelte-drawer-component";
+	// import Drawer from "svelte-drawer-component";
 	import Select from "svelte-select";
 	import { showMenu, rotate, showSubstrates, showUnselected, baseNetwork, minimumFC } from "./../stores";
 	import UploadButton from "./UploadButton.svelte";
@@ -31,7 +31,7 @@
 	});
 </script>
 
-<Drawer open={$showMenu} size="30%" on:clickAway={() => ($showMenu = false)}>
+<div class="drawer">
 	<div class="header">
 		<div class="fakebutton" />
 		<div class="title">Network Options</div>
@@ -70,15 +70,19 @@
 			</div>
 		</div>
 	</div>
-</Drawer>
+</div>
 
 <style>
+	.drawer {
+		background-color: #f5f5f5;
+		overflow-x: hidden;
+		height: 100vh;
+	}
+
 	.header {
 		display: flex;
-		flex-wrap: wrap;
 		justify-content: space-evenly;
 		align-items: center;
-		flex-direction: row;
 		padding: 10px 10px 10px 10px;
 		border-bottom: 1px solid #f0f0f0;
 		border-radius: 2px 2px 0 0;
@@ -118,7 +122,6 @@
         margin-bottom: 12px;
     }
     .switch{
-		
         float: right
     }
 </style>

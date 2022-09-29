@@ -3,31 +3,43 @@
 	import Scene from "./Scene.svelte";
 	import NetworkDrawer from "./lib/NetworkDrawer.svelte";
 	import MenuButton from "./lib/MenuButton.svelte";
-
+	import { showMenu } from "./stores";
 </script>
 
+<MenuButton />
 <div id="main">
-	<MenuButton />
-	<NetworkDrawer />
-	
-	<Canvas>
-		<Scene />
-	</Canvas>
+	<div class="drawerWrapper {$showMenu ? 'active' : ''}">
+		<NetworkDrawer />
+	</div>
+
+	<div class="canvas">
+		<Canvas >
+			<Scene />
+		</Canvas>
+	</div>
 </div>
 
 <style>
 	#main {
-		background-color: #0f1320;
-		width: 100%;
-		height: 100%;
-		position: absolute;
-	}
-	#main :global(.drawer .overlay) {
-		background: rgba(100, 100, 100, 0.5);
+		overflow-x: hidden;
+		display: flex;
 	}
 
-	#main :global(.drawer .panel) {
-		background: white;
-		color: black;
+	.drawerWrapper {
+		background: #444;
+		width: 0px;
+		height: 100vh;
+		transition: width 0.3s;
+	}
+
+	.drawerWrapper.active {
+		width: 20%;
+	}
+
+	.canvas {
+		position: relative;
+		flex: 1;
+		color: #444;
+		width: 1px;
 	}
 </style>
