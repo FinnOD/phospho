@@ -4,6 +4,8 @@
 	import NetworkDrawer from "./lib/NetworkDrawer.svelte";
 	import MenuButton from "./lib/MenuButton.svelte";
 	import { showMenu } from "./stores";
+
+	let cW, cH;
 </script>
 
 <MenuButton />
@@ -12,8 +14,8 @@
 		<NetworkDrawer />
 	</div>
 
-	<div class="canvas">
-		<Canvas >
+	<div class="canvas" bind:clientWidth={cW} bind:clientHeight={cH}>
+		<Canvas size={{ width: cW, height: cH }}>
 			<Scene />
 		</Canvas>
 	</div>
@@ -21,7 +23,7 @@
 
 <style>
 	#main {
-		overflow-x: hidden;
+		/* overflow-x: hidden; */
 		display: flex;
 	}
 
