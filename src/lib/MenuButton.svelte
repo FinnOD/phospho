@@ -28,9 +28,11 @@
 		height: 12%;
 		position: absolute;
 		left: 0;
-		transition: all var(--transition-time);
-		-webkit-transition: all var(--transition-time);
-		-moz-transition: all var(--transition-time);
+
+		will-change: filter;
+		transition: all var(--transition-time) ease;
+		-webkit-transition: all var(--transition-time) ease;
+		-moz-transition: all var(--transition-time) ease;
 	}
     
 
@@ -45,14 +47,15 @@
 		top: 100%;
 	}
     #menu-icon .line.active {
-        background: #404040;
+        background: rgba(0, 0, 0, 0.85);
+    }
+	#menu-icon:hover .line.active {
+		filter: drop-shadow(2px 1px 2px rgba(51, 51, 51, 0.7));
     }
 
 	#menu-icon:hover,
 	#menu-icon:focus .line {  
-		transform: scale(105%);
-		/* -webkit-transform: translateY(8px / 2 * -1);
-		-moz-transform: translateY(8px / 2 * -1); */
+		transform: scale(110%);
 	}
 
     .active .line-1 {

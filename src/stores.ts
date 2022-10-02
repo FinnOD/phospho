@@ -2,6 +2,8 @@ import { writable, derived } from "svelte/store";
 import { calculateGraphAttributes, dataGraphToGraphology, addFCtoG } from "./lib/graphLoading";
 
 export let showMenu = writable(false);
+export let selectedTab = writable("settings");
+
 export let rotate = writable(false);
 export let showSubstrates = writable(true);
 export let showUnselected = writable(true);

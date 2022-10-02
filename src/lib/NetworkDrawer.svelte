@@ -1,89 +1,61 @@
 <script lang="ts">
-	import { onMount, onDestroy } from "svelte";
-	// import Drawer from "svelte-drawer-component";
-	import Select from "svelte-select";
-	import { showMenu, rotate, showSubstrates, showUnselected, baseNetwork, minimumFC } from "./../stores";
-	import UploadButton from "./UploadButton.svelte";
-	import Switch from "./Switch.svelte";
+	import SettingsPanel from "./SettingsPanel.svelte";
+	import DrawerTab from "./DrawerTab.svelte";
+	import GoSearch from 'svelte-icons/go/GoSearch.svelte';
+	import GoSettings from 'svelte-icons/go/GoSettings.svelte'
+	import GiMeshNetwork from 'svelte-icons/gi/GiMeshNetwork.svelte';
 
-	let hasUpload;
-
-	const items = [
-		{ value: "../assets/networkTiny.json", label: "Tiny Network", data: undefined },
-		{ value: "../assets/kinases.json", label: "All Kinases", data: undefined },
-		{ value: "../assets/network.json", label: "Full Network", data: undefined },
+	let tabs = [
+		{id: "fakeButton", icon: undefined, selectable: false},
+		{id: "settings", icon: GoSettings, selectable: true},
+		{id: "info", icon: GiMeshNetwork, selectable: true},
+		{id: "search", icon: GoSearch, selectable: true},
 	];
-	let selectedNetwork = items[0];
 
-	let mounted = false;
-	$: if (mounted && selectedNetwork) {
-		baseNetwork.set(selectedNetwork.data);
-	}
-	onMount(async () => {
-		items[0].data = (await import("../assets/networkTiny.json")).default;
-		items[1].data = (await import("../assets/kinases.json")).default;
-		items[2].data = (await import("../assets/network.json")).default;
-		mounted = true;
-	});
 
-	onDestroy(() => {
-		mounted = false;
-	});
 </script>
 
 <div class="drawer">
-	<div class="header">
-		<div class="fakebutton" />
-		<div class="title">Network Options</div>
-	</div>
-	<div class="drawerbody">
-		Network Select
-		<Select {items} bind:value={selectedNetwork} />
-		<br />
-		Fold-Change Data
-		<UploadButton bind:value={hasUpload}/>
-		<br />
-		<hr />
-		<br />
-
-		<div class="switchElement">
-			Auto-rotate
-			<div class="switch">
-				<Switch bind:checked={$rotate} />
-			</div>
+	<nav>
+		{#each tabs as tab}
+			<DrawerTab id={tab.id} selectable={tab.selectable}>
+				{#if tab.icon}
+					<svelte:component this={tab.icon} />
+				{/if}
+			</DrawerTab>
+		{/each}
+	</nav>
+	<div class="drawerBody">
+		<div class="header">
+			<div class="title">Network Options</div>
 		</div>
-       
-        <div class="switchElement">
-			Show substrates
-			<div class="switch">
-				<Switch bind:checked={$showSubstrates} />
-			</div>
-		</div>
-		<br>
-		Fold-change selection
-		<input disabled={!hasUpload} style="width: 100%;" type=range step=0.1 bind:value={$minimumFC} min={-0.1} max=4>
-		<p />
-		<div class="switchElement">
-			Show unselected elements
-			<div class="switch">
-				<Switch bind:checked={$showUnselected} />
-			</div>
-		</div>
+		<SettingsPanel />
 	</div>
 </div>
 
 <style>
+	nav {
+		background: #f0f0f0;
+	}
+
+	.drawerBody {
+		height: 100%;
+	}
+
 	.drawer {
 		background-color: #f5f5f5;
+		display: flex;
+		flex-direction: row;
 		overflow-x: hidden;
 		height: 100vh;
 	}
 
 	.header {
 		display: flex;
+		flex-wrap: wrap;
 		justify-content: space-evenly;
 		align-items: center;
-		padding: 10px 10px 10px 10px;
+		padding: 18px 18px 10px 10px;
 		border-bottom: 1px solid #f0f0f0;
 		border-radius: 2px 2px 0 0;
 	}
@@ -93,35 +65,8 @@
 
 		font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial;
 		color: rgba(0, 0, 0, 0.85);
-		font-size: 16px;
+		font-size: 18px;
 		font-weight: 500;
 		line-height: 22px;
-		/* margin: 0; */
 	}
-
-	.fakebutton {
-		color: white;
-		border: 0px solid;
-		height: 30px;
-		width: 34px;
-	}
-
-	.drawerbody {
-		padding: 16px;
-		color: rgba(0, 0, 0, 0.85);
-		font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial,
-			Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
-			Noto Color Emoji;
-		font-size: 14px;
-		font-variant: tabular-nums;
-		word-wrap: break-word;
-		line-height: 1.5715;
-		/* overflow:auto; */
-	}
-    .switchElement{
-        margin-bottom: 12px;
-    }
-    .switch{
-        float: right
-    }
 </style>

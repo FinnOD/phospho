@@ -16,7 +16,7 @@
 		// get avaialble width and height and set the canvas size
 		wrapper = document.getElementsByClassName("drawerWrapper")[0];
 		canvas = document.getElementsByClassName("canvas")[0];
-		console.log(canvas.getBoundingClientRect());
+		// console.log(canvas.getBoundingClientRect());
 		let rect = canvas.getBoundingClientRect()
 		cW = rect.width;
 		cH = rect.height;
