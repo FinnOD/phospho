@@ -2,7 +2,6 @@
 	import { onMount, onDestroy } from "svelte";
 	import Select from "svelte-select";
 	import {
-		showMenu,
 		rotate,
 		showSubstrates,
 		showUnselected,
@@ -12,6 +11,8 @@
 	import UploadButton from "./UploadButton.svelte";
 	import Switch from "./Switch.svelte";
 
+	export let active;
+
 	let hasUpload;
 
 	const items = [
@@ -19,6 +20,7 @@
 		{ value: "../assets/kinases.json", label: "All Kinases", data: undefined },
 		{ value: "../assets/network.json", label: "Full Network", data: undefined },
 	];
+
 	let selectedNetwork = items[0];
 
 	let mounted = false;
@@ -37,7 +39,7 @@
 	});
 </script>
 
-<div class="settings">
+<div class="{'settings' + (!active ? ' inactive' : '')}">
 	Network Select
 	<Select {items} bind:value={selectedNetwork} />
 	<br />
@@ -92,6 +94,9 @@
 		word-wrap: break-word;
 		line-height: 1.5715;
 		/* overflow:auto; */
+	}
+	.settings.inactive {
+		display: none;
 	}
 	.switchElement {
 		margin-bottom: 12px;

@@ -54,7 +54,7 @@
 	
 	
 	<div class="canvas" bind:clientWidth={clientWidth} bind:clientHeight={clientHeight}>
-		<Canvas size={{ width: cW, height: cH }}>
+		<Canvas size={{ width: clientWidth, height: clientHeight }}>
 			<Scene />
 		</Canvas>
 	</div>

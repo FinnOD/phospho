@@ -1,16 +1,21 @@
 <script lang="ts">
-	import SettingsPanel from "./SettingsPanel.svelte";
-	import DrawerTab from "./DrawerTab.svelte";
 	import GoSearch from 'svelte-icons/go/GoSearch.svelte';
 	import GoSettings from 'svelte-icons/go/GoSettings.svelte'
 	import GiMeshNetwork from 'svelte-icons/gi/GiMeshNetwork.svelte';
+	
+	import SettingsPanel from "./SettingsPanel.svelte";
+	import InfoPanel from './InfoPanel.svelte';
+	import SearchPanel from './SearchPanel.svelte';
+	import DrawerTab from "./DrawerTab.svelte";
+	import { selectedTab } from "../stores";
 
 	let tabs = [
-		{id: "fakeButton", icon: undefined, selectable: false},
-		{id: "settings", icon: GoSettings, selectable: true},
-		{id: "info", icon: GiMeshNetwork, selectable: true},
-		{id: "search", icon: GoSearch, selectable: true},
+		{id: "fakeButton", title: "", icon: undefined, selectable: false},
+		{id: "settings", title: "Network Options", icon: GoSettings, selectable: true},
+		{id: "info", title: "Node Information", icon: GiMeshNetwork, selectable: true},
+		{id: "search", title: "Search", icon: GoSearch, selectable: true},
 	];
+	
 
 
 </script>
@@ -27,9 +32,11 @@
 	</nav>
 	<div class="drawerBody">
 		<div class="header">
-			<div class="title">Network Options</div>
+			<div class="title">{tabs.find((t) => $selectedTab === t.id).title}</div>
 		</div>
-		<SettingsPanel />
+		<SettingsPanel active={'settings' === $selectedTab}/>
+		<InfoPanel active={'info' === $selectedTab}/>
+		<SearchPanel active={'search' === $selectedTab}/>
 	</div>
 </div>
 
