@@ -47,14 +47,15 @@
 
 	.drawerBody {
 		height: 100%;
+		overflow-x: scroll;
 	}
 
 	.drawer {
 		background-color: #f5f5f5;
 		display: flex;
 		flex-direction: row;
-		overflow-x: hidden;
 		height: 100vh;
+		overflow-x: hidden;
 	}
 
 	.header {

@@ -15,14 +15,17 @@
 </script>
 
 <div class="{'info' + (!active ? ' inactive' : '')}">
-    howdy this is info
     {#if $info}
-    <div class="title"><h1>{$info.name}</h1></div>
+		<div class="title"><h1>{$info.name}</h1></div>
 		<div class="content">
 			<p>{$info.type}</p>
 			<p>UniprotID: {$info.id}</p>
 			<p>{$info.desc}</p>
 		</div>
+	{:else}
+	<div class="content">
+		No nodes selected.
+	</div>
     {/if}
 </div>
 

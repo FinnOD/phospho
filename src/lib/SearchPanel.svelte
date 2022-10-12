@@ -1,29 +1,57 @@
 <script lang="ts">
-    import { derived } from "svelte/store";
-	import { G, selectedNode } from "../stores";
+	import { G, selectedNodes } from "../stores";
+	import Typeahead from "svelte-typeahead";
+	import Nodes from "./Nodes.svelte";
+
+	import SelectedNodeListItem from "./SelectedNodeListItem.svelte";
 	
 	export let active;
+	
+	let data;
 
-    let info = derived([G, selectedNode], (values, set) => {
-        if(!values[1]){
-            // set(undefined);
-            return;
-        }
-        
-        set(values[0].getNodeAttributes(values[1]));
-    });
+	$: if($G){
+		let fullGraph = $G.export();
+		data = fullGraph["nodes"].map((n) => (
+			{
+				key: n['key'],
+				selector: n['key']
+			} 
+		)).concat(fullGraph["nodes"].map((n) => (
+			{
+				key: n['key'],
+				selector: n["attributes"]["name"]
+			}
+		)));
+	}
+
+	function onSel(results){
+		if(results !== "clear"){
+			$selectedNodes.add(results.original.key);
+			$selectedNodes = $selectedNodes;
+			console.log($selectedNodes);
+		}
+	}
 </script>
 
-<div class="{'search' + (!active ? ' inactive' : '')}">
-    howdy this is info
-    {#if $info}
-    <div class="title"><h1>{$info.name}</h1></div>
-		<div class="content">
-			<p>{$info.type}</p>
-			<p>UniprotID: {$info.id}</p>
-			<p>{$info.desc}</p>
-		</div>
-    {/if}
+<div class={"search" + (!active ? " inactive" : "")}>
+	{#if $G}
+		<Typeahead
+			hideLabel={true}
+			placeholder={"Search Nodes"}
+			extract={(item) => item.selector}
+			on:select={({ detail }) => onSel(detail)}
+			on:clear={() => (onSel("clear"))}
+			inputAfterSelect={"clear"}
+			{data}
+		/>
+		{#if $selectedNodes.size}
+			<ul>
+				{#each [...$selectedNodes] as n}
+					<SelectedNodeListItem nodeID={n} />
+				{/each}
+			</ul>
+		{/if}
+	{/if}
 </div>
 
 <style>
@@ -42,5 +70,14 @@
 
 	.search.inactive {
 		display: none;
+	}
+
+	ul {
+		list-style: none;
+		padding-left:0;
+	}
+
+	li {
+
 	}
 </style>
