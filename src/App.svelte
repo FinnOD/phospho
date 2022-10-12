@@ -4,6 +4,7 @@
 	import Scene from "./Scene.svelte";
 	import NetworkDrawer from "./lib/NetworkDrawer.svelte";
 	import MenuButton from "./lib/MenuButton.svelte";
+	import InfoBox from "./lib/InfoBox.svelte";
 	import { showMenu } from "./stores";
 
 	let clientWidth, clientHeight;
@@ -51,7 +52,7 @@
 	<div class="drawerWrapper {$showMenu ? 'active' : ''}">
 		<NetworkDrawer />
 	</div>
-	
+	<InfoBox />
 	
 	<div class="canvas" bind:clientWidth={clientWidth} bind:clientHeight={clientHeight}>
 		<Canvas size={{ width: clientWidth, height: clientHeight }}>
