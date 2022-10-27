@@ -1,27 +1,32 @@
 <script lang="ts">
-    import { derived } from "svelte/store";
-	import { G, hoveredNode } from "./../stores";
+	import { derived } from "svelte/store";
+	import { G, selectedNodes } from "./../stores";
     
 	export let active;
 
-    let info = derived([G, hoveredNode], (values, set) => {
+    let info = derived([G, selectedNodes], (values, set) => {
         if(!values[1]){
             // set(undefined);
             return;
         }
         
-        set(values[0].getNodeAttributes(values[1]));
+		let ids = [...values[1]]
+		let data = ids.map((id) => values[0].getNodeAttributes(id));
+        set(data);
     });
 </script>
 
 <div class="{'info' + (!active ? ' inactive' : '')}">
     {#if $info}
-		<div class="title"><h1>{$info.name}</h1></div>
-		<div class="content">
-			<p>{$info.type}</p>
-			<p>UniprotID: {$info.id}</p>
-			<p>{$info.desc}</p>
-		</div>
+		{#each $info as attrs, i (attrs.id)}
+			{#if (i !== 0)} <hr/> {/if}
+			<div class="title"><h2>{attrs.name}</h2></div>
+			<div class="content">
+				<p>{attrs.type}</p>
+				<p>UniprotID: {attrs.id}</p>
+				<p>{attrs.desc}</p>
+			</div>
+		{/each}
 	{:else}
 	<div class="content">
 		No nodes selected.
@@ -40,10 +45,13 @@
 		font-variant: tabular-nums;
 		word-wrap: break-word;
 		line-height: 1.5715;
-		/* overflow:auto; */
 	}
 
 	.info.inactive {
 		display: none;
+	}
+	
+	h2 {
+		margin: auto;
 	}
 </style>

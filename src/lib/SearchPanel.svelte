@@ -30,7 +30,6 @@
 		if(results !== "clear"){
 			$selectedNodes.add(results.original.key);
 			$selectedNodes = $selectedNodes;
-			console.log($selectedNodes);
 		}
 	}
 </script>

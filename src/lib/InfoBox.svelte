@@ -1,35 +1,47 @@
 <script type="ts">
 	import { fly } from "svelte/transition";
-	import { G, hoveredNode } from "./../stores";
+	import { G, hoveredNode, showMenu, selectedTab, selectedNodes } from "./../stores";
 
 	let nodeAttr = undefined;
-    let hovered = false;
+	let hovered = false;
+	let timer;
 
-	$: if ($hoveredNode) {
-        hovered = true;
+	$: if ($hoveredNode && !$showMenu) {
+		hovered = true;
 		nodeAttr = $G.getNodeAttributes($hoveredNode);
+		clearTimeout(timer);
 	} else {
-        hovered = false;
-        console.log('unselected')
+		timer = setTimeout(() => {
+			hovered = false;
+		}, 2000);
 	}
-
-	
 </script>
 
-{#if hovered}
+{#if hovered && !$showMenu}
 	<div
 		class="infobox"
 		in:fly={{ y: 200, duration: 1000 }}
-		out:fly={{ y: 200, duration: 1000, delay: 1000 }}
+		out:fly={{ y: 200, duration: 1000 }}
 		on:mouseenter={() => {
-			hovered = true;
+			clearTimeout(timer);
 		}}
 		on:mouseleave={() => {
-			hovered = false;
+			timer = setTimeout(() => {
+				hovered = false;
+				console.log("unselected");
+			}, 500);
 		}}
-        on:transitionend={nodeAttr = undefined}
+		on:transitionend={(nodeAttr = undefined)}
 	>
-		<div class="title"><h1>{nodeAttr.name}</h1></div>
+		<button
+			class="title"
+			on:click={() => {
+				$selectedNodes.add(nodeAttr.id);
+				$selectedNodes = $selectedNodes;
+				$showMenu = true;
+				$selectedTab = "info";
+			}}><h2>{nodeAttr.name}</h2></button
+		>
 		<div class="content">
 			<p>{nodeAttr.type}</p>
 			<p>UniprotID: {nodeAttr.id}</p>
@@ -49,11 +61,28 @@
 		border-radius: 10px 0px 0px 0px;
 		max-width: 40%;
 		min-width: 40%;
-		max-height: 30%;
+		max-height: 25%;
+		min-height: 25%;
 		right: 0px;
 		bottom: 0px;
 		overflow: scroll;
 
 		padding: 10px;
+	}
+
+	.title {
+		background:none;
+		border:none;
+		padding: 0px;
+
+		text-decoration: underline;
+	}
+
+	.title:hover {
+		color: #eee;
+	}
+
+	.title h2 {
+		margin: auto;
 	}
 </style>
