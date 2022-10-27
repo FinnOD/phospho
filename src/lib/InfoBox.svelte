@@ -1,13 +1,13 @@
 <script type="ts">
 	import { fly } from "svelte/transition";
-	import { G, selectedNode } from "./../stores";
+	import { G, hoveredNode } from "./../stores";
 
 	let nodeAttr = undefined;
     let hovered = false;
 
-	$: if ($selectedNode) {
+	$: if ($hoveredNode) {
         hovered = true;
-		nodeAttr = $G.getNodeAttributes($selectedNode);
+		nodeAttr = $G.getNodeAttributes($hoveredNode);
 	} else {
         hovered = false;
         console.log('unselected')

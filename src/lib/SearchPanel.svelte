@@ -11,6 +11,8 @@
 
 	$: if($G){
 		let fullGraph = $G.export();
+
+		// Process $G into key:selector pairs as nodeID:nodeID and name:nodeID
 		data = fullGraph["nodes"].map((n) => (
 			{
 				key: n['key'],
@@ -46,7 +48,7 @@
 		/>
 		{#if $selectedNodes.size}
 			<ul>
-				{#each [...$selectedNodes] as n}
+				{#each [...$selectedNodes] as n (n)}
 					<SelectedNodeListItem nodeID={n} />
 				{/each}
 			</ul>

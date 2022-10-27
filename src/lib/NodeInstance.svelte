@@ -7,7 +7,7 @@
 	import { HTML } from "@threlte/extras";
 	import type MultiDiGraph from "graphology";
 	import { Color } from "three";
-	import { selectedNode, G, minimumFC } from "./../stores";
+	import { hoveredNode, selectedNodes, G, minimumFC } from "./../stores";
 
 	export let graph: MultiDiGraph;
 	export let nodeID: string;
@@ -35,13 +35,13 @@
 	const nAttrs = graph.getNodeAttributes(nodeID);
 	const neighbours = graph.neighbors(nodeID);
 	let neighbourHover = false;
-	$: if ($selectedNode) {
+	$: if ($hoveredNode) {
 		let hasFC = $G.getAttribute("hasFC");
-		neighbourHover = neighbours.includes($selectedNode);
+		neighbourHover = neighbours.includes($hoveredNode);
 		if (hasFC && neighbourHover) {
 			neighbourHover =
 				$G.reduceEdges(
-					$selectedNode,
+					$hoveredNode,
 					nodeID,
 					(acc, edge, eAttr) => {
 						return Math.abs(eAttr.fc) > $minimumFC;
@@ -50,7 +50,7 @@
 				) ||
 				$G.reduceEdges(
 					nodeID,
-					$selectedNode,
+					$hoveredNode,
 					(acc, edge, eAttr) => {
 						return Math.abs(eAttr.fc) > $minimumFC;
 					},
@@ -64,11 +64,10 @@
 	const position: Position = { x: nAttrs.x, y: nAttrs.y, z: nAttrs.z };
 	const radius = nAttrs.radius ?? 1;
 	let hovering = false;
-	let clicked = false;
 
 	const scale = tweened(radius);
 	const colorTween = tweened(0);
-	$: if (!greyedOut && (hovering || neighbourHover || clicked)) {
+	$: if (!greyedOut && (hovering || neighbourHover || $selectedNodes.has(nodeID))) {
 		scale.set(radius * 3, {
 			duration: 50,
 			easing: sineInOut,
@@ -106,22 +105,28 @@
 	color={greyedOut ? new Color(0x505050) : $color}
 	on:pointerenter={() => {
 		hovering = true;
-		$selectedNode = nodeID;
+		$hoveredNode = nodeID;
 	}}
 	on:pointerleave={() => {
 		hovering = false;
-		$selectedNode = undefined;
+		$hoveredNode = undefined;
 	}}
 	on:click={() => {
-		clicked = !clicked;
+		if($selectedNodes.has(nodeID))
+			$selectedNodes.delete(nodeID);
+		else
+			$selectedNodes.add(nodeID);
+
+		//update
+		$selectedNodes = $selectedNodes;
 	}}
 >
-	{#if !greyedOut && ($scale > 1 || neighbourHover || clicked)}
+	{#if !greyedOut && ($scale > 1 || neighbourHover || $selectedNodes.has(nodeID))}
 		<HTML transform sprite scale={2 * $scale} pointerEvents={"none"}>
 			<div
 				class={"base " +
 					(neighbourHover ? "neighbour " : "") +
-					(clicked ? "clicked " : "") +
+					($selectedNodes.has(nodeID) ? "clicked " : "") +
 					(hovering ? "hovering " : "")}
 			>
 				<h1 transition:fade>{nAttrs.name}</h1>

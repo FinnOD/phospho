@@ -11,7 +11,7 @@
 		Color
 	} from "three";
 	import type MultiDiGraph from "graphology";
-	import { minimumFC, showUnselected, selectedNode } from "./../stores";
+	import { minimumFC, showUnselected, hoveredNode } from "./../stores";
 
 	export let graph: MultiDiGraph;
 	export let width: number;
@@ -32,7 +32,7 @@
 	const arrowLength = 10;
 	let cone = new ConeGeometry(1, 1, 10);
 
-	$: if (graph || $selectedNode) {
+	$: if (graph || $hoveredNode) {
 
 		const transparentMaterial = new MeshLambertMaterial({
 			opacity: 0.05,
@@ -58,7 +58,7 @@
 			if (!showSubstrates && !(sAttr.isKinase && tAttr.isKinase)) return;
 
 			let isSelected = false;
-			if($selectedNode == source || $selectedNode == target)
+			if($hoveredNode == source || $hoveredNode == target)
 				isSelected = true;
 
 			const sPos = new Vector3(sAttr.x, sAttr.y, sAttr.z);

@@ -1,10 +1,10 @@
 <script lang="ts">
     import { derived } from "svelte/store";
-	import { G, selectedNode } from "./../stores";
+	import { G, hoveredNode } from "./../stores";
     
 	export let active;
 
-    let info = derived([G, selectedNode], (values, set) => {
+    let info = derived([G, hoveredNode], (values, set) => {
         if(!values[1]){
             // set(undefined);
             return;
