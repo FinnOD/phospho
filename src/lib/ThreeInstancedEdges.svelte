@@ -11,7 +11,7 @@
 		Color
 	} from "three";
 	import type MultiDiGraph from "graphology";
-	import { minimumFC, showUnselected, hoveredNode } from "./../stores";
+	import { minimumFC, showUnselected, hoveredNode, selectedNodes } from "./../stores";
 
 	export let graph: MultiDiGraph;
 	export let width: number;
@@ -57,8 +57,11 @@
 			if (!attr.isFirstLink || source === target) return;
 			if (!showSubstrates && !(sAttr.isKinase && tAttr.isKinase)) return;
 
+
 			let isSelected = false;
 			if($hoveredNode == source || $hoveredNode == target)
+				isSelected = true;
+			if($selectedNodes.has(source) && $selectedNodes.has(target))
 				isSelected = true;
 
 			const sPos = new Vector3(sAttr.x, sAttr.y, sAttr.z);
