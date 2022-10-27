@@ -42,7 +42,7 @@
 
 <style>
 	nav {
-		background: #f0f0f0;
+		background: #ccc;
 	}
 
 	.drawerBody {

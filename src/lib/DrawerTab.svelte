@@ -32,18 +32,24 @@
 	}
 
 	.tab {
-		padding: 10px 10px 10px 10px;
-		color: rgba(0, 0, 0, 0.85);
-		border-right: 1px solid rgba(221, 221, 221, 1);
-		border-bottom: 1px solid rgba(221, 221, 221, 1);
+		/* margin-top: 3em; */
+		margin-bottom: 0.125rem;
+		padding: 10px 10px 13px 10px;
+		/* color: rgba(0, 0, 0, 0.85); */
+		/* border-right: 1px solid rgba(221, 221, 221, 1); */
+		/* border-bottom: 1px solid rgba(221, 221, 221, 1); */
 		height: 30px;
 		width: 34px;
-		align-items: center;
+		/* justify-content: center;
+  		align-items: center; */
+		/* transition: background-color 150ms ease; */
 	}
 
 	.tab.selected {
-		border-right: 1px solid #f5f5f5;
+		/* border-right: 1px solid #f5f5f5; */
+		border-radius: 8px 0px 0px 8px;
 		background: #f5f5f5;
+		/* background-color: red; */
 	}
 
 	.tab.hovered {
